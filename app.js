@@ -1,10 +1,9 @@
-import express from 'express';
-import mysql from 'mysql';
-import cors from 'cors';
-import moment from 'moment';
+const express = require('express');
+const mysql = require('mysql');
+const cors = require('cors');
+//import professorRoutes from './routes/lecturesRoutes';
 
 const app = express();
-const dateSet = moment();
 
 const db = mysql.createConnection({
   host: '127.0.0.2',
@@ -16,21 +15,10 @@ const db = mysql.createConnection({
 app.use(express.json());
 app.use(cors());
 
+app.use('/profesori', require('./routes/lecturesRoutes'));
+
 app.get('/', (req, res, next) => {
   res.json('Hello, this is the ISEUS backend');
-});
-
-app.get('/profesori/predavanja', (req, res) => {
-  const q = 'SELECT * FROM lecture';
-  db.query(q, (err, data) => {
-    if (err) return res.json(err);
-    else {
-      for (const date in data) {
-        data[date].date = moment(data[date].date).format('DD.MM.YYYY');
-      }
-      res.json(data);
-    }
-  });
 });
 
 app.listen(8800, () => {
